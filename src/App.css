@@ -30,7 +30,13 @@
 
 .cardwrapper {
   width: 300px;
-  margin-bottom: 30px;
+  margin: 30px;
+}
+
+.wrapper {
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
 }
 
 @keyframes App-logo-spin {
@@ -44,4 +50,10 @@
 
 .center {
   margin: 0 auto;
+}
+
+.container__slider {
+  margin: 0 auto;
+  width: 600px;
+  height: 300px;
 }

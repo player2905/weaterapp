@@ -1,66 +1,112 @@
+import { useState, useEffect } from 'react';
 import {useHttp} from './hooks/http.hook';
 
 import './App.css';
 
 function App() {
+  const [films, setFilms] = useState([]);
+
+  useEffect(() => {
+    getFilms();
+}, [])
 
   const {request} = useHttp();
 
-  const getWeather = async () => {
+  const getFilms = async () => {
     const res = await request('https://kinopoiskapiunofficial.tech/api/v2.2/films/premieres?year=2022&month=NOVEMBER')
-    console.log(res)
     _transformFilms(res);
 }
 
-let newFilms = [];
+let newFilms;
 
 const _transformFilms = (res) => {
   
-  newFilms = res.items.map((films) => ({
+  setFilms(res.items.map((films) => ({
       name: films.nameEn,
       posterUrl: films.posterUrl,
       premier: films.premiereRu
 
-  }))
-
-  renderFilms(newFilms)
-
+  })))
 }
 
-let items
+const renderFilms = (arr) => {
+  console.log(arr);
+  let slide = 0;
+  let items = arr.map((item, i) => {
+    
+    const active = i === slide ? 'carousel-item active' : 'carousel-item';
 
-const renderFilms = (newFilms) => {
-  items = newFilms.map(item => {
     return (
-      <div className="card cardwrapper">
-            <img src={item.posterUrl} className="card-img-top" alt="..."/>
-            <div className="card-body">
-            <h5 className="card-title">{item.name}</h5>
-            <p className="card-text">{item.premier}</p>
-            <a href="#" className="btn btn-primary">Go somewhere</a>
-            </div>
+      <>
+        <div class={active}>
+          <img src={item.posterUrl} className="d-block w-100" alt="..."/>
         </div>
+      </>
     )
   })
-  console.log(items)
 
+  return (
+    <div id="carouselExampleControls" className="carousel slide" data-bs-ride="carousel">
+    <div className="carousel-inner">
+          {items}
+    </div>
+    <button className="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+      <span className="carousel-control-prev-icon" aria-hidden="true"></span>
+      <span className="visually-hidden">Previous</span>
+    </button>
+    <button className="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next"
+    onClick={() => slide++}>
+      <span className="carousel-control-next-icon" aria-hidden="true"></span>
+      <span className="visually-hidden">Next</span>
+    </button>
+  </div>    
+
+  )
 }
 
-const content = items; 
-
+const items = renderFilms(films);
+// console.log(items);
 return (
-    <>
-      <div className="container mb-5">
-        {content}
+    <>  
+        <div className='container__slider'>
+        {items}
+
+        </div>
         <button 
           type="button" 
           className="btn btn-primary"
-          onClick={() => getWeather()}>
+          >
             Primary
         </button>
-      </div>
     </>
   )
 }
 
 export default App;
+
+          
+/* <div id="carouselExampleControls" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+    <div class="carousel-item">
+      <img src="..." class="d-block w-100" alt="...">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Previous</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleControls" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Next</span>
+  </button>
+</div>
+
+{/* <div className="card cardwrapper" key={i}>
+            <img src={item.posterUrl} className="card-img-top" alt="..."/>
+        </div>  */
